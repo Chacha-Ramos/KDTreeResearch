@@ -67,7 +67,7 @@ class KDTree:
                 n = [nodes[0].left_child, nodes[0].right_child]
                 return self.__can_nodes_break(n)
         else:
-            weights = [self.colors[i.color] for i in nodes]
+            weights = [i.weight for i in nodes]
             ai = self.__calculate_probs(weights)
             index_max = np.argmax(ai)
             n = [nodes[index_max]]
