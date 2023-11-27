@@ -156,6 +156,7 @@ class KDTree:
                 root.right_rectangle = [r_1, r_1]
         else:
             right_child = root.right_child
+            print(right_child.left_rectangle, right_child.right_rectangle)
             min_l = np.min(right_child.left_rectangle + right_child.right_rectangle, axis=0)
             max_r = np.max(right_child.left_rectangle + right_child.right_rectangle, axis=0)
 
