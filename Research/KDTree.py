@@ -84,6 +84,8 @@ class KDTree:
 
     def level1_random_selection(self, rectangle: list) -> str:
         c_nodes = self.query_canonical(rectangle)
+        if len(c_nodes) == 0:
+            raise Exception('The query rectangle returned 0 nodes')
         weights = [self.level1[node.color] for node in c_nodes]
         index_max = np.argmax(weights)
         return c_nodes[index_max].color
@@ -156,13 +158,11 @@ class KDTree:
                 root.right_rectangle = [r_1, r_1]
         else:
             right_child = root.right_child
-            print(right_child.left_rectangle, right_child.right_rectangle)
             min_l = np.min(right_child.left_rectangle + right_child.right_rectangle, axis=0)
             max_r = np.max(right_child.left_rectangle + right_child.right_rectangle, axis=0)
 
-            r_1 = [min_l[0], min_l[1]]
-            r_2 = [max_r[0], max_r[1]]
-
+            r_1 = list(min_l)
+            r_2 = list(max_r)
             root.right_rectangle = [r_1, r_2]
 
         if root.left_child.datapoint is not None:
@@ -176,8 +176,8 @@ class KDTree:
             min_l = np.min(left_child.left_rectangle + left_child.right_rectangle, axis=0)
             max_r = np.max(left_child.left_rectangle + left_child.right_rectangle, axis=0)
 
-            r_1 = [min_l[0], min_l[1]]
-            r_2 = [max_r[0], max_r[1]]
+            r_1 = list(min_l)
+            r_2 = list(max_r)
 
             root.left_rectangle = [r_1, r_2]
 
