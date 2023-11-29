@@ -85,7 +85,7 @@ class KDTree:
     def level1_random_selection(self, rectangle: list) -> str:
         c_nodes = self.query_canonical(rectangle)
         if len(c_nodes) == 0:
-            raise Exception('The query rectangle returned 0 nodes')
+            raise Exception('The query rectangle returned 0 nodes. ', rectangle)
         weights = [self.level1[node.color] for node in c_nodes]
         index_max = np.argmax(weights)
         return c_nodes[index_max].color
@@ -199,11 +199,13 @@ class KDTree:
         assert len(rectangle[0]) == self.dimension and len(
             rectangle[1]) == self.dimension, f'Expected dimension of rectangle to be {self.dimension}'
         assert rectangle[0] <= rectangle[1], 'Invalid query rectangle'
+        print('New query')
         return self.__query_canonical(self.root, rectangle)
 
     def __rectangles_intersect(self, root_rectangle, query_rectangle):
         for dim in range(len(query_rectangle[0])):
-            if root_rectangle[0][dim] > query_rectangle[1][dim] or query_rectangle[0][dim] > root_rectangle[1][dim]:
+            if (np.all(np.array(root_rectangle[0][dim]) >= np.array(query_rectangle[1][dim])) or
+                    np.all(np.array(query_rectangle[0][dim]) >= np.array(root_rectangle[1][dim]))):
                 return False
         return True
 
