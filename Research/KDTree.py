@@ -82,10 +82,11 @@ class KDTree:
             return can_nodes, self.twod_root
         return self.__can_nodes_break(can_nodes)
 
-    def level1_random_selection(self, rectangle: list) -> str:
+    def level1_random_selection(self, rectangle: list) -> str or None:
         c_nodes = self.query_canonical(rectangle)
         if len(c_nodes) == 0:
-            raise Exception('The query rectangle returned 0 nodes. ', rectangle)
+            print('The query rectangle returned 0 nodes. ', rectangle)
+            return None
         weights = [self.level1[node.color] for node in c_nodes]
         index_max = np.argmax(weights)
         return c_nodes[index_max].color
@@ -199,7 +200,6 @@ class KDTree:
         assert len(rectangle[0]) == self.dimension and len(
             rectangle[1]) == self.dimension, f'Expected dimension of rectangle to be {self.dimension}'
         assert rectangle[0] <= rectangle[1], 'Invalid query rectangle'
-        print('New query')
         return self.__query_canonical(self.root, rectangle)
 
     def __rectangles_intersect(self, root_rectangle, query_rectangle):
