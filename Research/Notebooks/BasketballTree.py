@@ -1,26 +1,26 @@
-import random
 import numpy as np
 
 
 class Datapoint:
-    def __init__(self, coordinate, color, **kwargs):
+    def __init__(self, coordinate, **kwargs):
         assert isinstance(coordinate, list), 'Coordinate must be a list of integers'
-        assert isinstance(color, str)
+        # assert isinstance(color, str)
         self.coordinate = coordinate
-        self.color = color
+        # self.color = color
         self.kwargs = kwargs
 
 
 class Node:
-    def __init__(self, weight = 0, children = 0, color = None, rect_1 = None, rect_2 = None, dp: Datapoint = None,
-                 **kwargs):
+    # def __init__(self, weight = 0, children = 0, color = None, rect_1 = None, rect_2 = None, dp: Datapoint = None,
+    #              **kwargs):
+    def __init__(self, children = 0, rect_1 = None, rect_2 = None, dp: Datapoint = None, **kwargs):
         self.left_rectangle: list[int] or None = rect_1
         self.right_rectangle: list[int] or None = rect_2
         self.datapoint: Datapoint or None = dp
         self.left_child: Node or None = None
         self.right_child: Node or None = None
-        self.color: str or None = color
-        self.weight = weight
+        # self.color: str or None = color
+        # self.weight = weight
         self.children = children
         self.kwargs = kwargs
 
@@ -29,82 +29,84 @@ class KDTree:
     def __init__(self):
         self.root: Node or None = None
         self.dimension: int = 0
-        self.level1: dict[str: float] = dict()
-        self.colors: dict[str: float] or None = None
+        # self.level1: dict[str: float] = dict()
+        # self.colors: dict[str: float] or None = None
         self.twod_root: Node or None = None
 
-    def __calculate_probs(self, weights: list[float]) -> list[float]:
-        ai = list()
-        for weight in weights:
-            ai.append(self.__single_prob(weight))
-        return ai
+    # def __calculate_probs(self, weights: list[float]) -> list[float]:
+    #     ai = list()
+    #     for weight in weights:
+    #         ai.append(self.__single_prob(weight))
+    #     return ai
 
-    def __single_prob(self, weight) -> float:
-        return random.random() ** (1 / weight)
+    # def __single_prob(self, weight) -> float:
+    #     return random.random() ** (1 / weight)
 
-    def __add_color(self, color: str):
-        if color not in self.level1:
-            self.level1[color] = self.__single_prob(self.colors[color])
+    # def __add_color(self, color: str):
+    #     if color not in self.level1:
+    #         self.level1[color] = self.__single_prob(self.colors[color])
 
-    def __twod_transformation(self, points: list[Datapoint]):
-        points.sort(key=lambda p: p.coordinate)
-        colors = dict()
-        twod_points = list()
-        for p in points:
-            value = -10
-            if p.color in colors:
-                value = colors[p.color]
-            colors[p.color] = p.coordinate[0]
-            twod_point = Datapoint([p.coordinate[0], value], p.color)
-            twod_points.append(twod_point)
-        return twod_points
+    # def __twod_transformation(self, points: list[Datapoint]):
+    #     points.sort(key=lambda p: p.coordinate)
+    #     colors = dict()
+    #     twod_points = list()
+    #     for p in points:
+    #         value = -10
+    #         if p.color in colors:
+    #             value = colors[p.color]
+    #         colors[p.color] = p.coordinate[0]
+    #         twod_point = Datapoint([p.coordinate[0], value], p.color)
+    #         twod_points.append(twod_point)
+    #     return twod_points
 
-    def __can_nodes_break(self, nodes):
-        if len(nodes) == 1:
-            if nodes[0].datapoint is not None:
-                return nodes[0].color
-            else:
-                n = [nodes[0].left_child, nodes[0].right_child]
-                return self.__can_nodes_break(n)
-        else:
-            weights = [i.weight for i in nodes]
-            ai = self.__calculate_probs(weights)
-            index_max = np.argmax(ai)
-            n = [nodes[index_max]]
-            return self.__can_nodes_break(n)
+    # def __can_nodes_break(self, nodes):
+    #     if len(nodes) == 1:
+    #         if nodes[0].datapoint is not None:
+    #             return nodes[0].color
+    #         else:
+    #             n = [nodes[0].left_child, nodes[0].right_child]
+    #             return self.__can_nodes_break(n)
+    #     else:
+    #         weights = [i.weight for i in nodes]
+    #         ai = self.__calculate_probs(weights)
+    #         index_max = np.argmax(ai)
+    #         n = [nodes[index_max]]
+    #         return self.__can_nodes_break(n)
 
-    def level2_random_selection(self, rectangle: list, points: list[Datapoint]):
-        if self.twod_root is None:
-            twod_points = self.__twod_transformation(points)
-            self.twod_root = self.__build_tree(twod_points)
-        can_nodes = self.__query_canonical(self.twod_root, rectangle)
-        if len(can_nodes) == 0:
-            return can_nodes, self.twod_root
-        return self.__can_nodes_break(can_nodes)
+    # def level2_random_selection(self, rectangle: list, points: list[Datapoint]):
+    #     if self.twod_root is None:
+    #         twod_points = self.__twod_transformation(points)
+    #         self.twod_root = self.__build_tree(twod_points)
+    #     can_nodes = self.__query_canonical(self.twod_root, rectangle)
+    #     if len(can_nodes) == 0:
+    #         return can_nodes, self.twod_root
+    #     return self.__can_nodes_break(can_nodes)
 
-    def level1_random_selection(self, rectangle: list) -> str or None:
-        c_nodes = self.query_canonical(rectangle)
-        if len(c_nodes) == 0:
-            print('The query rectangle returned 0 nodes. ', rectangle)
-            return None
-        weights = [self.level1[node.color] for node in c_nodes]
-        index_max = np.argmax(weights)
-        return c_nodes[index_max].color
+    # def level1_random_selection(self, rectangle: list) -> str or None:
+    #     c_nodes = self.query_canonical(rectangle)
+    #     if len(c_nodes) == 0:
+    #         print('The query rectangle returned 0 nodes. ', rectangle)
+    #         return None
+    #     weights = [self.level1[node.color] for node in c_nodes]
+    #     index_max = np.argmax(weights)
+    #     return c_nodes[index_max].color
 
-    def build_tree(self, points: list[Datapoint], colors: dict[str: float]):
+    # def build_tree(self, points: list[Datapoint], colors: dict[str: float]):
+    def build_tree(self, points: list[Datapoint]):
         assert len(points) > 0, 'There must be at least one datapoint to build tree'
         assert len(points[0].coordinate), 'The coordinate must have at least one dimension'
         self.dimension = len(points[0].coordinate)
-        self.colors = colors
+        # self.colors = colors
         self.root = self.__build_tree(points)
 
     def __build_tree(self, points: list[Datapoint]) -> Node or None:
         if len(points) == 0:
             return None
         if len(points) == 1:
-            color_1 = points[0].color
-            self.__add_color(color_1)
-            return Node(dp=points[0], color=color_1, weight=self.colors[color_1])
+            # color_1 = points[0].color
+            # self.__add_color(color_1)
+            # return Node(dp=points[0], color=color_1, weight=self.colors[color_1])
+            return Node(dp=points[0])
         if len(points) == 2:
             points.sort(key=lambda pts: pts.coordinate)
 
@@ -119,19 +121,22 @@ class KDTree:
             else:
                 r_2 = [points[1].coordinate, points[1].coordinate]
 
-            color_1 = points[0].color
-            color_2 = points[1].color
-            self.__add_color(color_1)
-            self.__add_color(color_2)
-            if self.level1[color_1] >= self.level1[color_2]:
-                root_color = color_1
-            else:
-                root_color = color_2
+            # color_1 = points[0].color
+            # color_2 = points[1].color
+            # self.__add_color(color_1)
+            # self.__add_color(color_2)
+            # if self.level1[color_1] >= self.level1[color_2]:
+            #     root_color = color_1
+            # else:
+            #     root_color = color_2
 
-            root = Node(rect_1=r_1, rect_2=r_2, color=root_color, children=2,
-                        weight=self.colors[color_1] + self.colors[color_2])
-            root.left_child = Node(dp=points[0], color=color_1, weight=self.colors[color_1])
-            root.right_child = Node(dp=points[1], color=color_2, weight=self.colors[color_2])
+            # root = Node(rect_1=r_1, rect_2=r_2, color=root_color, children=2,
+            #             weight=self.colors[color_1] + self.colors[color_2])
+            root = Node(rect_1=r_1, rect_2=r_2, children=2)
+            # root.left_child = Node(dp=points[0], color=color_1, weight=self.colors[color_1])
+            root.left_child = Node(dp=points[0])
+            # root.right_child = Node(dp=points[1], color=color_2, weight=self.colors[color_2])
+            root.right_child = Node(dp=points[1])
             return root
 
         coordinates = np.array([p.coordinate for p in points])
@@ -182,15 +187,15 @@ class KDTree:
 
             root.left_rectangle = [r_1, r_2]
 
-        color_1 = root.left_child.color
-        color_2 = root.right_child.color
-        if self.level1[color_1] >= self.level1[color_2]:
-            root_color = color_1
-        else:
-            root_color = color_2
+        # color_1 = root.left_child.color
+        # color_2 = root.right_child.color
+        # if self.level1[color_1] >= self.level1[color_2]:
+        #     root_color = color_1
+        # else:
+        #     root_color = color_2
 
-        root.weight = root.left_child.weight + root.right_child.weight
-        root.color = root_color
+        # root.weight = root.left_child.weight + root.right_child.weight
+        # root.color = root_color
         return root
 
     def query_canonical(self, rectangle: list):
@@ -204,8 +209,7 @@ class KDTree:
 
     def __rectangles_intersect(self, root_rectangle, query_rectangle):
         for dim in range(len(query_rectangle[0])):
-            if (np.all(np.array(root_rectangle[0][dim]) >= np.array(query_rectangle[1][dim])) or
-                    np.all(np.array(query_rectangle[0][dim]) >= np.array(root_rectangle[1][dim]))):
+            if max(root_rectangle[0][dim], query_rectangle[0][dim]) > min(root_rectangle[1][dim], query_rectangle[1][dim]):
                 return False
         return True
 

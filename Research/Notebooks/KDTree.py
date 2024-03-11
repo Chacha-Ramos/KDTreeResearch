@@ -203,6 +203,11 @@ class KDTree:
         return self.__query_canonical(self.root, rectangle)
 
     def __rectangles_intersect(self, root_rectangle, query_rectangle):
+        # check if it works for higher than 2 dimension.
+        # for dim in range(len(query_rectangle[0])):
+        #     if max(root_rectangle[0][dim], query_rectangle[0][dim]) > min(root_rectangle[1][dim], query_rectangle[1][dim]):
+        #         return False
+        # return True
         for dim in range(len(query_rectangle[0])):
             if (np.all(np.array(root_rectangle[0][dim]) >= np.array(query_rectangle[1][dim])) or
                     np.all(np.array(query_rectangle[0][dim]) >= np.array(root_rectangle[1][dim]))):
