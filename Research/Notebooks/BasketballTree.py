@@ -149,7 +149,7 @@ class KDTree:
         p2 = points[median_index:]
         p1.sort(key=lambda pts: pts.coordinate)
         p2.sort(key=lambda pts: pts.coordinate)
-        if p1[0].coordinate <= p2[0].coordinate:
+        if p1[0].coordinate[1] <= p2[0].coordinate[1]:
             root.left_child = self.__build_tree(p1)
             root.right_child = self.__build_tree(p2)
         else:
