@@ -198,14 +198,14 @@ class KDTree:
         # root.color = root_color
         return root
 
-    def query_canonical(self, rectangle: list):
+    def query_canonical(self, rectangle: list, nodes_visited):
         assert len(rectangle) == 2, f'There must be two coordinates to draw a query rectangle'
         assert isinstance(rectangle[0], list) and isinstance(rectangle[0],
                                                              list), 'Each coordinate must be in the format of a list'
         assert len(rectangle[0]) == self.dimension and len(
             rectangle[1]) == self.dimension, f'Expected dimension of rectangle to be {self.dimension}'
         assert rectangle[0] <= rectangle[1], 'Invalid query rectangle'
-        return self.__query_canonical(self.root, rectangle)
+        return self.__query_canonical(self.root, rectangle, nodes_visited)
 
     def __rectangles_intersect(self, root_rectangle, query_rectangle):
         for dim in range(len(query_rectangle[0])):
@@ -213,7 +213,8 @@ class KDTree:
                 return False
         return True
 
-    def __query_canonical(self, root: Node or None, query_rect: list) -> list[Node]:
+    def __query_canonical(self, root: Node or None, query_rect: list, nodes_visited) -> list[Node]:
+
         canonical_nodes: list[Node] = list()
         if root is None:
             return canonical_nodes
@@ -230,9 +231,11 @@ class KDTree:
             return canonical_nodes
 
         if self.__rectangles_intersect(root.left_rectangle, query_rect):
-            canonical_nodes.extend(self.__query_canonical(root.left_child, query_rect))
+            nodes_visited[0] += 1
+            canonical_nodes.extend(self.__query_canonical(root.left_child, query_rect, nodes_visited))
 
         if self.__rectangles_intersect(root.right_rectangle, query_rect):
-            canonical_nodes.extend(self.__query_canonical(root.right_child, query_rect))
+            nodes_visited[0] += 1
+            canonical_nodes.extend(self.__query_canonical(root.right_child, query_rect, nodes_visited))
 
         return canonical_nodes
